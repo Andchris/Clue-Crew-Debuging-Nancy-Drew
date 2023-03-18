@@ -1,0 +1,114 @@
+Execution Type.  Defines the method for executing this Action Record.  AE_SINGLE_EXEC
+	specifies that this record will be executed one time during a scene.  AE_MULTI_EXEC 
+	specifies that this record can be executed multiple times.  Note that the dependencies for the
+	AE_MULTI_EXEC type must be of a cyclical nature, i.e., the player’s time clock
+
+*	Action Data.  This is data specific to the above action sequence.   If there is NO data for the 
+	action, this field contains a NONE (0) value as a scene programmer/engine programmer 
+	verification that there is indeed NO data for this action.  This field will vary greatly in size.  The
+	data MUST be properly formatted for the action!  In order to maintain BACKWARD 
+	COMPATABILITY for  previously-programmed scenes as well as providing for expansion of
+	the Action Data as the game is developed, all newly-defined action data must be APPENDED to
+	previously-used data lists.  There will quite possibly be instances where previously-programmed
+	 Action Data will have to be “touched up” with an Action Data upgrade, but hopefully this can 
+	be minimized.
+		No data - NONE (0)
+		Logic - possibly no data.
+		Scene Change - Data to include:
+			new scene number
+			palette index for the new scene
+			number of  hot spot frames that allow scene change
+			coords of hot spots in each frame(s)
+		Inventory Item display and availability - Data to include:
+			frame numbers and coordinates per frame for location of item
+			frame number(s) in which the item is available
+			image file which contains the item sprite
+			locations of the various item sprites in the file
+			ordering info detailing the file sprite order with frame order
+		Character Interaction Sequence - switch to close-up of character on image background 
+		and play AVI interaction sequence - Data to include:
+			background image file
+			filename(s) for animation video and sound file
+			filename(s) for background music or effects to be played during sequence
+			placement location for video on top of background
+			info on the ordering of video files - i.e., talk to actor the first time this seq is
+			  accessed, the next time the actor may tell you to “buzz off”...
+		Character Interaction Sequence with user response - switch to close-up of character 
+		on image background and play AVI interaction sequence then show possible user
+		responses to the character - Data to include:
+			background image file
+			filename(s) for animation video and sound file
+			filename(s) for background music or effects to be played during sequence
+			placement location for video on top of background
+			info on the ordering of video files - i.e., talk to actor the first time this seq is
+			  accessed, the next time the actor may tell you to “buzz off”...
+			user response text and how its to be displayed.  responses may be stored as
+			logic events for later logic processing on other scenes or sequences
+		Character Interaction Sequence with sprite overlay - switch to close-up of character 
+		on image background and play AVI interaction sequence. Place a transparent sprite
+		in front of AVI character, i.e., an AVI character walking behind a sprite table.
+		Data to include:
+			background image file
+			filename(s) for animation video and sound file
+			filename(s) for background music or effects to be played during sequence
+			placement location for video on top of background
+			info on the ordering of video files - i.e., talk to actor the first time this seq is
+			  accessed, the next time the actor may tell you to “buzz off”...
+			sprite overlay info to include filename, location of sprite in file, sprite 
+			location in viewport, Z order(?) of sprite, etc.
+		Palette animation of background frame.  Data to include:
+			palette colors or color range for animation
+			color cycling mode, i.e., cycle in loop or just toggle palette colors to
+			  new values
+			cycling time period
+		sprite animation on background frame.  Data to include:
+			image filename
+			cell size of sprite or locations of sprites in image
+			animation time period and sprite movement time period
+			Z order number of sprite
+			background frame(s) where sprite appears, location of sprite in each
+			   frame, offsets for each frame in case sprite is moving and user can scroll
+			   background frame at the same time.
+
+
+
+*	Type of Dependency.
+		NO dependencies - all following fields are signaled empty via NONE value (0).
+		Inventory Item
+		Event
+		Logic
+		Elapsed Game Time
+		Elapsed Scene Time
+		Elapsed Player Time
+		SAMS Sight
+		SAMS Sound
+		Scene Count
+
+*	Dependency Label.   This field is NONE if Elapsed Time dependency condition.
+		NONE (0)
+		Inventory Item Label
+		Event Label
+		Logic Label
+		SAMS Label
+		Scene Number Being Examined
+
+*	Dependency Condition.   This field is NONE if Elapsed Time dependency condition.
+		NONE (0)
+		Inventory Item 	INV_EMPTY or INV_HOLDING
+		Event 		EV_NOT_OCCURRED or EV_OCCURRED
+		Logic		LOG_USED or LOG_NOT_USED
+		SAMS		SAMS_OCCURRED or SAMS_NOT_OCCURRED
+		Scene Count	Number of Times this scene has been called
+
+*	Time Condition.  Organized in 4 short - HH MM SS MS values.  All shorts set to NONE if not 	used.
+		NONE (0)
+		Inventory Item		Required elapsed time since obtaining/losing inventory item.
+		Event			Required elapsed time since event occurred.
+		Logic			Required elapsed time since logic occurred.
+		Elapsed Game Time	Required elapsed time since game start.
+		Elapsed Scene Time	Required elapsed time since scene start.
+		Elapsed Player Time	Required elapsed player time-of-day clock
+		Scene Count has 2 Time Conditions:
+			1)  Elapsed Game Time since specified scene was last called in HH MM SS MS
+			      units.
+			2)  As a Modifier for Dependency Condition Scene Count as 						      LESS_THAN_SCENE_COUNT, GREATER_THAN_SCENE_COUNT, or                           			     EQUAL_TO_SCENE_COUNT in the MS short field with HH MM and SS				     set to -1 (0xffff)
